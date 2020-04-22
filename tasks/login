@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function run() {
+  local computer_name=$(app_computer_name)
+  local login=${1:-ubuntu}
+  ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
+  run_login || (
+    app_exec -i lxc start $computer_name && run_login
+  )
+}
+
+function run_login {
+  app_exec lxc exec $computer_name -- sudo --login --user $login
+}

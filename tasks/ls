@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function run {
+  app_exec lxc ls --format csv | cut -d',' -f1
+}

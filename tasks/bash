@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+function run() {
+  local computer_name=$(app_computer_name)
+  ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
+  run_bash || (
+    app_exec lxc start $computer_name && run_bash
+  )
+}
+
+function run_bash {
+  app_exec lxc exec $computer_name bash
+}
