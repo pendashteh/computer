@@ -14,6 +14,7 @@ function run() {
   ! $(potato_is_numeric $h_port$c_port) && echo 'Error' && run_help && return 
   local proxy_name='proxy_'$(echo ${h_port}_${h_ip}_${c_port} | sed 's#[.:]#_#g')
   app_exec lxc config device add $computer_name $proxy_name proxy listen=tcp:$h_ip:$h_port connect=tcp:127.0.0.1:$c_port
+  echo "You can now open http://"$h_ip':'$h_port
 }
 
 function run_help {
