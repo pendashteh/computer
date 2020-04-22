@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function run() {
-  [ "$1" = "--help" ] && run_help && return
+  ([ -z "$1" ] || [ "$1" = "--help" ]) && run_help && return
 
   local computer_name=$(app_computer_name)
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
@@ -13,7 +13,7 @@ function run() {
   local h_port=${parts[0]}
   local h_ip=${parts[1]}
   local c_port=${parts[2]}
-  ! $(potato_is_numeric $h_port$c_port) && echo 'Error' && run_help && return 
+  ! $(potato_is_numeric $h_port$c_port) && echo 'Please check your input argument.' && run_help && return
   local proxy_name='proxy-'${computer_name}-${c_port}
 
   if [ "$subtask" = "stop" ]; then
