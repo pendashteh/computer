@@ -7,22 +7,38 @@ function run() {
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
   parts=($(potato_string_split ':' $1))
 
+  local subtask=${2:-'start'} # start, stop
+
   # @TODO validate h_port and c_port are dgits
   local h_port=${parts[0]}
   local h_ip=${parts[1]}
   local c_port=${parts[2]}
   ! $(potato_is_numeric $h_port$c_port) && echo 'Error' && run_help && return 
-  local proxy_name='proxy_'$(echo ${h_port}_${h_ip}_${c_port} | sed 's#[.:]#_#g')
+  local proxy_name='proxy-'${computer_name}-${c_port}
+
+  if [ "$subtask" = "stop" ]; then
+    proxy_stop
+  else
+    proxy_start
+    echo "You can now open http://"$h_ip':'$h_port
+  fi
+}
+
+function proxy_start {
   app_exec lxc config device add $computer_name $proxy_name proxy listen=tcp:$h_ip:$h_port connect=tcp:127.0.0.1:$c_port
-  echo "You can now open http://"$h_ip':'$h_port
+}
+
+function proxy_stop {
+  app_exec lxc config device remove $computer_name $proxy_name
 }
 
 function run_help {
   echo '
   Usage:
-  $ computer @id proxy [host_port]:127.0.0.1:[computer_port]
+  $ computer @id proxy [host_port]:127.0.0.1:[computer_port] [start|stop]
 
   Example:
-  $ computer @ubuntu 3001:127.0.0.1:3000
+  $ computer @ubuntu proxy 3001:127.0.0.1:3000
+  $ computer @ubuntu proxy 3001:127.0.0.1:3000 stop
   '
 }
