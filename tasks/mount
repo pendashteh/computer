@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+function run() {
+  [ "$1" = "--help" ] && run_help && return
+
+  local computer_name=$(app_computer_name)
+  ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
+
+  run_setup
+
+  local host_dir=${1:-$(pwd)}
+  local computer_dir=${2:-/home/ubuntu/dev}
+
+  local device_name=$(echo $computer_dir | sed 's#/#_#g')
+  app_exec lxc config device remove $computer_name $device_name
+  app_exec lxc config device add $computer_name $device_name disk source=$host_dir path=$computer_dir
+  echo "Successful. Try 'lxc exec $computer_name -- ls $computer_dir'"
+}
+
+function run_setup {
+  if [ $(lxc config set $computer_name raw.idmap) ]; then
+    echo -en "uid $(id -u) 1000\ngid $(id -g) 1000" | app_exec lxc config set $computer_name raw.idmap -
+    app_exec lxc restart $computer_name
+  fi
+}
+
+function run_help {
+  echo '
+  Usage:
+  $ computer @id mount /path/to/host/source [/home/ubuntu/]path/to/destination
+
+  Example:
+  $ computer @ubuntu mount [$(pwd)] [dev]
+  '
+}
