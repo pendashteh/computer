@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 
-function run() {
+function run {
+  local task=$1
+  [ ! -z $task ] && potato_load_task $task
+  _help $task
+}
+
+function _help {
+  local task=$1
+  [ -z "$task" ] && _help_general || _help_task
+}
+
+function _help_task {
+  echo 'Implementation:'
+  declare -f run
+}
+
+function _help_general {
     echo "___ Command name: "$0
     local -a tasks=( "$(potato_tasks_list)" )
     echo "|__ Available tasks"
@@ -13,4 +29,7 @@ function run() {
         # This is how to get the value for an arg:
         echo "   |__ arg $index:" $(potato_get_arg $arg)
     done
+    echo ''
+    echo 'To get a task-specific help, run the following:'
+    echo '$ computer help $task'
 }
