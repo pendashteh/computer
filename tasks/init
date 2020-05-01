@@ -7,3 +7,10 @@ function run {
   local base_name=${2:-"ubuntu:18.04"}
   app_exec lxc launch $base_name $computer_name
 }
+
+function _help {
+  echo 'Usage:'
+  echo 'computer init $computer_name [$base_name: ubuntu:18.04]'
+  echo 'Implementation:'
+  declare -f run
+}
