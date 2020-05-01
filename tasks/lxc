@@ -2,6 +2,11 @@
 
 function run() {
   local computer_name=$(app_computer_name)
+  # @TODO potential for ambiguty
+  if [ "$computer_name" = "default" ]; then
+    potato_run_task help
+    return
+  fi
   local lxc_command=$1
   shift
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
