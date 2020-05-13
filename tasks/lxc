@@ -8,6 +8,7 @@ function run() {
     return
   fi
   local lxc_command=$1
+  # @TODO this does not work for cases like 'config show' where the command is more than 2 words
   shift
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
   app_exec lxc $lxc_command $computer_name $@
