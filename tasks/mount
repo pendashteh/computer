@@ -1,20 +1,37 @@
 #!/usr/bin/env bash
 
+readonly COMPUTER_MOUNT="mount"
+readonly COMPUTER_UNMOUNT="unmount"
+
 function run() {
   [ "$1" = "--help" ] && _help && return
+
+  local method=$COMPUTER_MOUNT
+  [ "$1" = "--unmount" ] && method=$COMPUTER_UNMOUNT && shift
 
   local computer_name=$(app_computer_name)
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
 
-  run_setup
 
   local host_dir=${1:-$(pwd)}
-  local computer_dir=${2:-/home/ubuntu/dev}
+  local computer_dir=${2:-dev}
 
   local device_name=$(echo $computer_dir | sed 's#/#_#g')
+
+  run_setup
   app_exec lxc config device remove $computer_name $device_name
-  app_exec lxc config device add $computer_name $device_name disk source=$host_dir path=$computer_dir
-  echo "Successful. Try '$ computer @$computer_name exec ls $computer_dir'"
+  local res=$?
+
+  if [ "$method" = "$COMPUTER_UNMOUNT" ]; then
+    echo "Attempted to unmount ${device_name} from ${computer_name}"
+    test $res -eq 0 && echo "Successful." || echo "Failed."
+  else
+    app_exec lxc config device add $computer_name $device_name disk source=$host_dir path=$computer_dir
+    local res=$?
+    echo "Attempted to mount $host_dir on the host machine to $computer_dir on $computer_name as $device_name"
+    test $res -eq 0 && echo "Successful. Try '$ computer @$computer_name exec ls $computer_dir'" || echo 'Failed.'
+  fi
+
 }
 
 function run_setup {
@@ -27,7 +44,8 @@ function run_setup {
 function _help {
   echo '
   Usage:
-  $ computer @id mount /path/to/host/source [/home/ubuntu/]path/to/destination
+  $ computer --help
+  $ computer @id mount [--unmount] [/path/to/host/source | $(pwd)] [[/home/ubuntu/]path/to/destination | dev ]
 
   Example:
   $ computer @ubuntu mount [$(pwd)] [dev]
