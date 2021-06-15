@@ -2,8 +2,11 @@
 
 function run {
   local task=$1
-  [ ! -z $task ] && potato_load_task $task
-  _help $task
+  if [ ! -z $task ] && potato_load_task $task >/dev/null; then
+    _help $task
+  else
+    _help_general $@
+  fi
 }
 
 function _help {
@@ -17,18 +20,10 @@ function _help_task {
 }
 
 function _help_general {
-    echo "___ Command name: "$0
+    echo 'Usage: $ computer [@name] task'
     local -a tasks=( "$(potato_tasks_list)" )
-    echo "|__ Available tasks"
+    echo "___ Available tasks:"
     printf "   |__ %s\n" ${tasks[@]}
-    # This is how you put all the arguments in an array
-    local -a args=( "${POTATO_THIS_ARGS[@]}" )
-    echo "|__ Args (#${#args[@]})"
-    for index in ${!args[@]}; do
-        (( arg=index + 1 ))
-        # This is how to get the value for an arg:
-        echo "   |__ arg $index:" $(potato_get_arg $arg)
-    done
     echo ''
     echo 'To get a task-specific help, run the following:'
     echo '$ computer help $task'

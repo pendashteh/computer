@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 function run() {
+  app_require_computer_name || return
+  app_computer_should_exist || return
+
   local computer_name=$(app_computer_name)
-  ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
   app_exec lxc info $computer_name
   app_exec lxc config show $computer_name
 }

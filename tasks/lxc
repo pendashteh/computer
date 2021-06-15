@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 function run() {
+
   local computer_name=$(app_computer_name)
   # @TODO potential for ambiguty
   if [ "$computer_name" = "default" ]; then

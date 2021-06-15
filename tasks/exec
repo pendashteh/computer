@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 function run() {
-  app_exec lxc exec $(app_computer_name) -- $@
+  potato_run_task lxc exec $@
 }

@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
 function run {
-  local computer_name=$1
-  test -z "$computer_name" && echo "Please provide the computer_name" && return
-  app_validate_computer_exists $computer_name && echo "Computer name $computer_name already in use." && return
-  local base_name=${2:-"ubuntu:18.04"}
+  app_require_computer_name || return
+  app_computer_should_not_exist || return
+
+  local computer_name=$(app_computer_name)
+  local base_name=${1:-"ubuntu:18.04"}
   app_exec lxc launch $base_name $computer_name
 }
 
 function _help {
   echo 'Usage:'
-  echo 'computer init $computer_name [$base_name: ubuntu:18.04]'
+  echo 'computer @computer_name init [base_name: ubuntu:18.04]'
   echo 'Implementation:'
   declare -f run
 }
