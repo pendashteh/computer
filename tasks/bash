@@ -14,3 +14,9 @@ function run() {
 function run_bash {
   app_exec lxc exec $computer_name bash
 }
+
+function run_help {
+  echo '
+    enters the bash in the machine as root.
+  '
+}
