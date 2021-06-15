@@ -2,24 +2,18 @@
 
 function run {
   local task=$1
-  if [ ! -z $task ] && potato_load_task $task >/dev/null; then
-    _help $task
-  else
-    _help_general $@
-  fi
-}
+  [ -z $task ] || potato_load_task $task >/dev/null || echo "
+    * Task '$task' was not found.
+  "
 
-function _help {
-  local task=$1
-  [ -z "$task" ] && _help_general || _help_task
-}
+  run_help
 
-function _help_task {
   echo 'Implementation:'
   declare -f run
 }
 
-function _help_general {
+function run_help {
+    # implement this in your task and provide the description
     echo 'Usage: $ computer [@name] task'
     local -a tasks=( "$(potato_tasks_list)" )
     echo "___ Available tasks:"
