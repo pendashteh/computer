@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 function run() {
-  app_require_computer_name || return
+  local computer_name=$(app_computer_name)
+
+  [ -z "$computer_name" ] && app_exec lxc info && return
+
   app_computer_should_exist || return
 
-  local computer_name=$(app_computer_name)
   app_exec lxc info $computer_name
   app_exec lxc config show $computer_name
 }
