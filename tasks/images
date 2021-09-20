@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+function run {
+  local cachefile=$HOME/.computer-images-cache
+  test ! -s $cachefile && {
+   app_exec lxc image list images: |\
+   awk -F'|' '{ print $2}' |\
+   sed '/^[[:space:]]*$/d' |\
+   awk -F'/' '{ print $1"/"$2 }' | sort | uniq | egrep -v 'more|ALIAS' > $cachefile
+  }
+  cat $cachefile
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+function run {
+  local computer_name_default='computer'$RANDOM
+  read -p "Computer name? [$computer_name_default] " computer_name
+  computer_name=${computer_name:-$computer_name_default}
+  echo ''
+  echo 'Available images:'
+  echo -n 'loading...'
+  local images=( $(potato_run_task images) )
+  echo -ne '\r'
+  for _image in ${images[@]}; do
+    ((i++))
+    printf ' %2d: %s\n' $i ${_image}
+  done
+  read -p 'Which image to launch? ' input_i
+  ((input_i--))
+  image=${images[$input_i]}
+  app_exec lxc launch images:$image $computer_name
+}
