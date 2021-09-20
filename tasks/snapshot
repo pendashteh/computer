@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+function run {
+ 
+  list__help='Lists all snapshots'
+  list__ () {
+    potato_run_task lxc info | tr '\n' '\f' | sed 's|^.*Snapshots\:||g' | tr '\f' '\n'
+  }
+
+  create__help='Creates a snapshot'
+  create__ () {
+    local snapshot_default='snapshot-'$(date +%Y%m%d-%H%M%S)
+    local snapshot=${1:-$snapshot_default}
+    potato_run_task lxc snapshot $snapshot
+  }
+
+  restore__help='Restores a snapshot'
+  restore__ () {
+    local snapshot=${1}
+    potato_run_task lxc restore $snapshot
+  }
+
+  . undies
+}
