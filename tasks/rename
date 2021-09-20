@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function run {
+  local computer_name=$(app_computer_name)
+  local new_name=$1
+  app_exec lxc mv $computer_name $new_name
+}
