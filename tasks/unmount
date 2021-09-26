@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function run() {
+  potato_run_task mount --unmount ${1}
+}
+
+function run_help {
+  echo '
+  Usage:
+  $ computer @id unmount [[/home/ubuntu/]path/to/destination | dev ]
+  $ computer @id unmount /box/path
+  $ computer @id mount --unmount /box/path
+  '
+}

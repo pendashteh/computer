@@ -7,7 +7,7 @@ function run() {
   [ "$1" = "--help" ] && _help && return
 
   local method=$COMPUTER_MOUNT
-  [ "$1" = "--unmount" ] && method=$COMPUTER_UNMOUNT && shift
+  [ "$1" = "--unmount" ] && method=$COMPUTER_UNMOUNT
 
   local computer_name=$(app_computer_name)
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
@@ -41,11 +41,13 @@ function run_setup {
   fi
 }
 
-function _help {
+function run_help {
   echo '
   Usage:
   $ computer --help
-  $ computer @id mount [--unmount] [/path/to/host/source | $(pwd)] [[/home/ubuntu/]path/to/destination | dev ]
+  $ computer @id mount [--unmount | /path/to/host/source | $(pwd)] [[/home/ubuntu/]path/to/destination | dev ]
+  $ computer @id mount /local/path /box/path
+  $ computer @id mount --unmount /box/path
 
   Example:
   $ computer @ubuntu mount [$(pwd)] [dev]
