@@ -5,7 +5,8 @@ function run() {
 
   local computer_name=$(app_computer_name)
   ! app_validate_computer_exists $computer_name && echo 'Computer '$computer_name' does not exist.' && return
-  parts=($(potato_string_split ':' $1))
+
+  IFS=':' read -ra parts <<<"$1"
 
   local subtask=${2:-'start'} # start, stop
 
@@ -13,7 +14,11 @@ function run() {
   local h_port=${parts[0]}
   local h_ip=${parts[1]}
   local c_port=${parts[2]}
-  ! $(potato_is_numeric $h_port$c_port) && echo 'Please check your input argument.' && run_help && return
+  if test ! $h_port$c_port =~ '^[0-9]+$'; then
+    echo 'Please check your input argument.'
+    run_help
+    return
+  fi
   local proxy_name='proxy-'${computer_name}-${c_port}
 
   if [ "$subtask" = "stop" ]; then
