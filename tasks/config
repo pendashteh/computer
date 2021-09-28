@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+function run() {
+  local key=$1
+  local value=${2:-''}
+  local computer_name=$(app_computer_name)
+  
+  app_computer_should_exist || return
+
+  if [ -z $value ]; then
+    app_exec lxc config get $computer_name $key
+  else
+    app_exec lxc config set $computer_name $key $value
+  fi
+}
