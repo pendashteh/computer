@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+function run() {
+  app_require_computer_name || return
+  app_computer_should_exist || return
+
+  local computer_name=$(app_computer_name)
+  lxc exec ${computer_name} -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1
+}
+
