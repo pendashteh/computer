@@ -14,7 +14,7 @@ function run() {
 
 
   local host_dir=${1:-$(pwd)}
-  local computer_dir=${2:-dev}
+  local computer_dir=${2:-/root/dev}
 
   local device_name=$(echo $computer_dir | sed 's#/#_#g')
 
