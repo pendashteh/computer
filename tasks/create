@@ -5,6 +5,11 @@ function run {
   read -p "Computer name? [$computer_name_default] " computer_name
   computer_name=${computer_name:-$computer_name_default}
   echo ''
+  echo 'Storage pool? [default] '
+  _storage_list
+  read storage_pool
+  storage_pool=${storage_pool:-'default'}
+  echo ''
   echo 'Available images:'
   echo -n 'loading...'
   local images=( $(potato_run_task images) )
@@ -16,5 +21,9 @@ function run {
   read -p 'Which image to launch? ' input_i
   ((input_i--))
   image=${images[$input_i]}
-  app_exec lxc launch images:$image $computer_name
+  app_exec lxc launch images:$image $computer_name --storage $storage_pool
+}
+
+function _storage_list {
+  lxc storage list | cut -d'|' -f2,3,4 | grep -v '+' | grep -v 'NAME'
 }
